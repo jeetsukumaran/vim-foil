@@ -131,7 +131,7 @@ function! s:_foil_get_text_fold_start_level(text)
     elseif a:text =~ '^\s*\(#\{3}\|=\{3}\) .*'
         return 1
     elseif a:text =~ '^\([-*]\|[0-9]\+[.)]\)'
-        return 2
+        return 1
     elseif a:text =~ '\%5c\([-*]\|[0-9]\+[.)]\)'
         return 3
     elseif a:text =~ '\%9c\([-*]\|[0-9]\+[.)]\)'
