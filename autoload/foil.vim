@@ -36,6 +36,7 @@ function! foil#init()
     let s:header_level_patterns['\%13c\([-*]\|[0-9]\+[.)]\)'] =  4
     let s:header_level_patterns['\%17c\([-*]\|[0-9]\+[.)]\)'] =  5
     let s:header_level_patterns['\%21c\([-*]\|[0-9]\+[.)]\)'] =  6
+    let s:header_level_patterns['\%25c\([-*]\|[0-9]\+[.)]\)'] =  7
     return s:header_level_patterns
 endfunction!
 
@@ -153,7 +154,6 @@ function! foil#get_text_fold_start_level(text)
         call foil#init()
     endif
     for pattern in keys(s:header_level_patterns)
-        echomsg s:header_level_patterns[pattern]
         if a:text =~ pattern
         " if match(pattern, a:text) >= 0
             return s:header_level_patterns[pattern]

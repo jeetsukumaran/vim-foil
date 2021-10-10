@@ -52,8 +52,8 @@ function! FoilFoldExpr()
 endfunction
 
 function! FoilFoldText()
-    return "[" . b:foil_line_fold_levels[v:foldstart] . "] " . getline(v:foldstart)
-    " return getline(v:foldstart)
+    " return "[" . b:foil_line_fold_levels[v:foldstart] . "] " . getline(v:foldstart)
+    return getline(v:foldstart)
 endfunction
 
 " }}}1
