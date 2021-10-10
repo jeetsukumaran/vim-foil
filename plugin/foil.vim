@@ -8,9 +8,9 @@
 "
 " Reload Guard {{{1
 " ============================================================================
-" if exists("g:did_foil_plugin") && g:did_foil_plugin == 1
-"     finish
-" endif
+if exists("g:did_foil_plugin") && g:did_foil_plugin == 1
+    finish
+endif
 let g:did_foil_plugin = 1
 " }}} 1
 
@@ -61,9 +61,9 @@ set cpo&vim
 " endfunction
 
 function! s:_foil_apply_to_buffer()
-    " if exists("b:foil_applied_to_buffer")
-    "     return
-    " endif
+    if exists("b:foil_applied_to_buffer")
+        return
+    endif
     let b:foil_buffer_foldmethod = &foldmethod
     let b:foil_buffer_foldexpr = &foldexpr
     let b:foil_buffer_foldtext = &foldtext
@@ -186,12 +186,6 @@ endfunction
 command! FoilActivate :call <SID>_foil_apply_to_buffer()
 command! FoilDeactivate :call <SID>_foil_deapply_buffer()
 " }}}
-
-:FoilActivate
-
-" set foldexpr=FoilFoldExpr()
-" set foldtext=FoilFoldText()
-" set foldmethod=expr
 
 " Globals {{{1
 " ============================================================================
