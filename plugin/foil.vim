@@ -133,15 +133,15 @@ function! s:_foil_get_text_fold_start_level(text)
     elseif a:text =~ '^\([-*]\|[0-9]\+[.)]\)'
         return 1
     elseif a:text =~ '\%5c\([-*]\|[0-9]\+[.)]\)'
-        return 3
+        return 2
     elseif a:text =~ '\%9c\([-*]\|[0-9]\+[.)]\)'
-        return 4
+        return 3
     elseif a:text =~ '\%13c\([-*]\|[0-9]\+[.)]\)'
-        return 5
+        return 4
     elseif a:text =~ '\%17c\([-*]\|[0-9]\+[.)]\)'
-        return 6
+        return 5
     elseif a:text =~ '\%21c\([-*]\|[0-9]\+[.)]\)'
-        return 7
+        return 6
     endif
     return -1
 endfunction
@@ -174,6 +174,7 @@ function! FoilFoldExpr()
 endfunction
 
 function! FoilFoldText()
+    " return "[" . b:foil_line_fold_levels[v:foldstart] . "] " . getline(v:foldstart)
     return getline(v:foldstart)
 endfunction
 
