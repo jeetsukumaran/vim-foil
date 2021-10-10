@@ -29,26 +29,7 @@ set cpo&vim
 " "<1", "<2", ..        a fold with this level ends at this line
 " ">1", ">2", ..        a fold with this level starts at this line
 function! FoilFoldExpr()
-    " if b:foil_line_fold_levels[v:lnum+1] != "-1"
-    "     " previously calculated level for this line
-    "     return b:foil_line_fold_levels[v:lnum+1]
-    " end
-    let vline = getline(v:lnum)
-    let fold_start_level = foil#get_text_fold_start_level(vline)
-    if fold_start_level == -1
-        let indentlevel = indent(v:lnum) / shiftwidth()
-        if indentlevel == 0
-            let fold_level = b:foil_line_fold_levels[v:lnum-1][0]
-        else
-            let fold_level = indentlevel + 1
-        end
-        let b:foil_line_fold_levels[v:lnum] = [fold_level, ""]
-        let fold_expr_val = fold_start_level
-    else
-        let b:foil_line_fold_levels[v:lnum] = [fold_start_level, ">"]
-        let fold_expr_val = ">" . fold_start_level
-    endif
-    return fold_expr_val
+    return foil#calc_fold_level(bufnr("."), v:lnum)
 endfunction
 
 function! FoilFoldText()

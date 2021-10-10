@@ -117,9 +117,71 @@ function! foil#save_and_restore_foldmethod(mode)
     end
 endfunction
 
+function! foil#recalc_all(buf_ref)
+    let lnum = 1
+    while 1
+        let fl = foil#calc_fold_level(a:buf_ref, lnum)
+        if fl == -1
+            break
+        endif
+        let lnum = lnum + 1
+    endwhile
+endfunction
+
 " }}}1
 
-" Support {{{1
+" Folding Support {{{1
+" ============================================================================
+
+function! foil#get_text_fold_start_level(text)
+    if !exists("s:header_level_patterns")
+        call foil#init()
+    endif
+    for pattern in keys(s:header_level_patterns)
+        if a:text =~ pattern
+        " if match(pattern, a:text) >= 0
+            return s:header_level_patterns[pattern]
+        endif
+    endfor
+    return -1
+endfunction
+
+function! foil#calc_fold_level(buf_ref, lnum)
+    " if b:foil_line_fold_levels[a:lnum+1] != "-1"
+    "     " previously calculated level for this line
+    "     return b:foil_line_fold_levels[a:lnum+1]
+    " end
+    " let vline = getline(a:lnum)
+    let vlines = getbufline(a:buf_ref, a:lnum)
+    if empty(vlines)
+        return -1
+    endif
+    let vline = vlines[0]
+    let fold_start_level = foil#get_text_fold_start_level(vline)
+    if fold_start_level == -1
+        let indentlevel = indent(a:lnum) / shiftwidth()
+        if indentlevel == 0
+            let fold_level = b:foil_line_fold_levels[a:lnum-1][0]
+        else
+            let fold_level = indentlevel + 1
+        end
+        let b:foil_line_fold_levels[a:lnum] = [fold_level, ""]
+        let fold_expr_val = fold_start_level
+    else
+        let b:foil_line_fold_levels[a:lnum] = [fold_start_level, ">"]
+        let fold_expr_val = ">" . fold_start_level
+    endif
+    return fold_expr_val
+endfunction
+
+" }}}1
+
+" Editing Support {{{1
+" ============================================================================
+
+" }}}1
+
+" Highlighting Support {{{1
 " ============================================================================
 
 function! foil#toggle_hlattribute(hlname, hlelem, hlattr)
@@ -147,19 +209,6 @@ function! foil#toggle_hlattribute(hlname, hlelem, hlattr)
     endif
     let cmd = "highlight " . a:hlname . " " . a:hlelem . "=" . join(new_elem_parts, ",")
     execute cmd
-endfunction
-
-function! foil#get_text_fold_start_level(text)
-    if !exists("s:header_level_patterns")
-        call foil#init()
-    endif
-    for pattern in keys(s:header_level_patterns)
-        if a:text =~ pattern
-        " if match(pattern, a:text) >= 0
-            return s:header_level_patterns[pattern]
-        endif
-    endfor
-    return -1
 endfunction
 
 " function! foil#ToggleHighlight(group_name, ...)
