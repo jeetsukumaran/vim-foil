@@ -77,8 +77,8 @@ function! s:_foil_apply_to_buffer()
     endif
     setlocal foldexpr=FoilFoldExpr()
     setlocal foldtext=FoilFoldText()
-    " let b:foil_headings = {}
-    " let b:foil_applied_to_buffer = 1
+    let b:foil_line_fold_levels = {}
+    let b:foil_applied_to_buffer = 1
 endfunction!
 
 function! s:_foil_deapply_buffer()
@@ -100,14 +100,8 @@ function! s:_foil_deapply_buffer()
     if exists("b:foil_buffer_autocommands")
         unlet b:foil_buffer_autocommands
     endif
-    if exists("b:foil_headings")
-        unlet b:foil_headings
-    endif
     if exists("b:foil_previous_line_foldlevel")
         unlet b:foil_previous_line_foldlevel
-    endif
-    if exists("b:foil_latex_in_document_body")
-        unlet b:foil_latex_in_document_body
     endif
     if exists("b:foil_applied_to_buffer")
         unlet b:foil_applied_to_buffer
@@ -129,37 +123,54 @@ endfunction
 " Folding Functions {{{1
 " ============================================================================
 
-function! s:_foil_get_line_fold_level(line)
-    if a:line =~ '^\s*[#=] .*'
-        return ">1"
-    elseif a:line =~ '^\s*\(#\{2}\|=\{2}\) .*'
-        return ">1"
-    elseif a:line =~ '^\s*\(#\{3}\|=\{3}\) .*'
-        return ">1"
-    elseif a:line =~ '^\([-*]\|[0-9]\+[.)]\)'
-        return ">2"
-    elseif a:line =~ '\%5c\([-*]\|[0-9]\+[.)]\)'
-        return ">3"
-    elseif a:line =~ '\%9c\([-*]\|[0-9]\+[.)]\)'
-        return ">4"
-    elseif a:line =~ '\%13c\([-*]\|[0-9]\+[.)]\)'
-        return ">5"
-    elseif a:line =~ '\%17c\([-*]\|[0-9]\+[.)]\)'
-        return ">6"
-    elseif a:line =~ '\%21c\([-*]\|[0-9]\+[.)]\)'
-        return ">7"
+function! s:_foil_get_text_fold_start_level(text)
+    if a:text =~ '^\s*[#=] .*'
+        return 1
+    elseif a:text =~ '^\s*\(#\{2}\|=\{2}\) .*'
+        return 1
+    elseif a:text =~ '^\s*\(#\{3}\|=\{3}\) .*'
+        return 1
+    elseif a:text =~ '^\([-*]\|[0-9]\+[.)]\)'
+        return 2
+    elseif a:text =~ '\%5c\([-*]\|[0-9]\+[.)]\)'
+        return 3
+    elseif a:text =~ '\%9c\([-*]\|[0-9]\+[.)]\)'
+        return 4
+    elseif a:text =~ '\%13c\([-*]\|[0-9]\+[.)]\)'
+        return 5
+    elseif a:text =~ '\%17c\([-*]\|[0-9]\+[.)]\)'
+        return 6
+    elseif a:text =~ '\%21c\([-*]\|[0-9]\+[.)]\)'
+        return 7
     endif
-    return 0
+    return -1
 endfunction
-
 
 " 0                     the line is not in a fold
 " 1, 2, ..              the line is in a fold with this level
 " "<1", "<2", ..        a fold with this level ends at this line
 " ">1", ">2", ..        a fold with this level starts at this line
 function! FoilFoldExpr()
+    " if b:foil_line_fold_levels[v:lnum+1] != "-1"
+    "     " previously calculated level for this line
+    "     return b:foil_line_fold_levels[v:lnum+1]
+    " end
     let vline = getline(v:lnum)
-    return s:_foil_get_line_fold_level(vline)
+    let fold_start_level = s:_foil_get_text_fold_start_level(vline)
+    if fold_start_level == -1
+        let indentlevel = indent(v:lnum) / shiftwidth()
+        if indentlevel == 0
+            let fold_level = b:foil_line_fold_levels[v:lnum-1]
+        else
+            let fold_level = indentlevel + 1
+        end
+        let b:foil_line_fold_levels[v:lnum] = fold_level
+        let fold_expr_val = fold_start_level
+    else
+        let b:foil_line_fold_levels[v:lnum] = fold_start_level
+        let fold_expr_val = ">" . fold_start_level
+    endif
+    return fold_expr_val
 endfunction
 
 function! FoilFoldText()
@@ -174,6 +185,8 @@ endfunction
 command! FoilActivate :call <SID>_foil_apply_to_buffer()
 command! FoilDeactivate :call <SID>_foil_deapply_buffer()
 " }}}
+
+:FoilActivate
 
 " set foldexpr=FoilFoldExpr()
 " set foldtext=FoilFoldText()
