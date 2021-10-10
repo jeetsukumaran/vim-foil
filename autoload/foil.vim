@@ -21,29 +21,23 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}1
 
-
 " Housekeeping Functions {{{1
 " ============================================================================
 
-" function! foil#init()
-"     let g:foil_filetypes = {}
-"     let g:foil_native_filetypes = {
-"                 \ "tex": "foil#tex",
-"                 \ "latex": "foil#tex",
-"                 \ "rst": "foil#restructured_text",
-"                 \ "rest": "foil#restructured_text",
-"                 \ "md": "foil#markdown",
-"                 \ "markdown": "foil#markdown",
-"                 \ "mkd": "foil#markdown",
-"                 \ "pandoc": "foil#pandoc"
-"                 \ }
-"     for key in keys(g:foil_native_filetypes)
-"         let g:foil_filetypes[key] = g:foil_native_filetypes[key]
-"     endfor
-"     for key in keys(g:foil_user_filetypes)
-"         let g:foil_filetypes[key] = g:foil_user_filetypes[key]
-"     endfor
-" endfunction!
+function! foil#init()
+    let g:foil_initialized = 1
+    let s:header_level_patterns = {}
+    let s:header_level_patterns['^\s*[#=] .*'] =  1
+    let s:header_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  1
+    let s:header_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  1
+    let s:header_level_patterns['^\([-*]\|[0-9]\+[.)]\)'] =  1
+    let s:header_level_patterns['\%5c\([-*]\|[0-9]\+[.)]\)'] =  2
+    let s:header_level_patterns['\%9c\([-*]\|[0-9]\+[.)]\)'] =  3
+    let s:header_level_patterns['\%13c\([-*]\|[0-9]\+[.)]\)'] =  4
+    let s:header_level_patterns['\%17c\([-*]\|[0-9]\+[.)]\)'] =  5
+    let s:header_level_patterns['\%21c\([-*]\|[0-9]\+[.)]\)'] =  6
+    return s:header_level_patterns
+endfunction!
 
 " function! foil#check_buffer()
 "     if g:foil_auto_enable
@@ -83,6 +77,9 @@ function! foil#apply_to_buffer()
 endfunction!
 
 function! foil#deapply_buffer()
+    if !exists("g:foil_initialized")
+        call foil#init()
+    endif
     execute "setlocal foldmethod=" . get(b:, "foil_buffer_foldmethod", &foldmethod)
     execute "setlocal foldexpr=" . get(b:, "foil_buffer_foldexpr", &foldexpr)
     execute "setlocal foldtext=" . get(b:, "foil_buffer_foldtext", &foldtext)
@@ -120,8 +117,10 @@ function! foil#save_and_restore_foldmethod(mode)
 endfunction
 
 " }}}1
+
 " Support {{{1
 " ============================================================================
+
 function! foil#toggle_hlattribute(hlname, hlelem, hlattr)
     " Redirect output of :highlight to l:current
     redir => l:current_hl
@@ -150,25 +149,16 @@ function! foil#toggle_hlattribute(hlname, hlelem, hlattr)
 endfunction
 
 function! foil#get_text_fold_start_level(text)
-    if a:text =~ '^\s*[#=] .*'
-        return 1
-    elseif a:text =~ '^\s*\(#\{2}\|=\{2}\) .*'
-        return 1
-    elseif a:text =~ '^\s*\(#\{3}\|=\{3}\) .*'
-        return 1
-    elseif a:text =~ '^\([-*]\|[0-9]\+[.)]\)'
-        return 1
-    elseif a:text =~ '\%5c\([-*]\|[0-9]\+[.)]\)'
-        return 2
-    elseif a:text =~ '\%9c\([-*]\|[0-9]\+[.)]\)'
-        return 3
-    elseif a:text =~ '\%13c\([-*]\|[0-9]\+[.)]\)'
-        return 4
-    elseif a:text =~ '\%17c\([-*]\|[0-9]\+[.)]\)'
-        return 5
-    elseif a:text =~ '\%21c\([-*]\|[0-9]\+[.)]\)'
-        return 6
+    if !exists("s:header_level_patterns")
+        call foil#init()
     endif
+    for pattern in keys(s:header_level_patterns)
+        echomsg s:header_level_patterns[pattern]
+        if a:text =~ pattern
+        " if match(pattern, a:text) >= 0
+            return s:header_level_patterns[pattern]
+        endif
+    endfor
     return -1
 endfunction
 
