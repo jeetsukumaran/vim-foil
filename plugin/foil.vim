@@ -38,14 +38,14 @@ function! FoilFoldExpr()
     if fold_start_level == -1
         let indentlevel = indent(v:lnum) / shiftwidth()
         if indentlevel == 0
-            let fold_level = b:foil_line_fold_levels[v:lnum-1]
+            let fold_level = b:foil_line_fold_levels[v:lnum-1][0]
         else
             let fold_level = indentlevel + 1
         end
-        let b:foil_line_fold_levels[v:lnum] = fold_level
+        let b:foil_line_fold_levels[v:lnum] = [fold_level, ""]
         let fold_expr_val = fold_start_level
     else
-        let b:foil_line_fold_levels[v:lnum] = fold_start_level
+        let b:foil_line_fold_levels[v:lnum] = [fold_start_level, ">"]
         let fold_expr_val = ">" . fold_start_level
     endif
     return fold_expr_val
