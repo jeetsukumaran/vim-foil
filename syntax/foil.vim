@@ -8,16 +8,16 @@
 " endif
 
 syntax clear
-syntax region outlineHeader1 start=/^\s*[#=] .*/ end=/$/
-syntax region outlineHeader2 start=/^\s*\(#\{2}\|=\{2}\) .*/ end=/$/
-syntax region outlineHeader3 start=/^\s*\(#\{3}\|=\{3}\) .*/ end=/$/
-syntax region outlineLevel1     start=/^\([-*]\|[0-9]\+[.)]\)/ end=/$/ contains=outlineLevel1Leader oneline
-syntax region outlineLevel1Leader start=/^\([-*]\|[0-9]\+[.)]\)/ end=/\s\+/ contained
-syntax region outlineLevel2  start=/\%5c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
-syntax region outlineLevel3  start=/\%9c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
-syntax region outlineLevel4 start=/\%13c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
-syntax region outlineLevel5 start=/\%17c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
-syntax region outlineLevel6 start=/\%21c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
+" syntax region outlineHeader1 start=/^\s*[#=] .*/ end=/$/
+" syntax region outlineHeader2 start=/^\s*\(#\{2}\|=\{2}\) .*/ end=/$/
+" syntax region outlineHeader3 start=/^\s*\(#\{3}\|=\{3}\) .*/ end=/$/
+" syntax region outlineLevel1     start=/^\([-*]\|[0-9]\+[.)]\)/ end=/$/ contains=outlineLevel1Leader oneline
+" syntax region outlineLevel1Leader start=/^\([-*]\|[0-9]\+[.)]\)/ end=/\s\+/ contained
+" syntax region outlineLevel2  start=/\%5c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
+" syntax region outlineLevel3  start=/\%9c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
+" syntax region outlineLevel4 start=/\%13c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
+" syntax region outlineLevel5 start=/\%17c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
+" syntax region outlineLevel6 start=/\%21c\([-*]\|[0-9]\+[.)]\)/ end=/$/ oneline
 
 if &background == "dark"
     hi! outlineHeader1 guifg=#904040 gui=italic,underline,bold

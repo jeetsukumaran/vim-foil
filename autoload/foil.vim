@@ -25,10 +25,14 @@ set cpo&vim
 " ============================================================================
 
 function! foil#init()
+    " keys = regexp patterns
+    " value = [a, b], where:
+    "   -   a = fold level
+    "   -   b = heading level (for syntax coloration)
     let s:heading_fold_level_patterns = {}
-    let s:heading_fold_level_patterns['^\s*[#=] .*'] =  1
-    let s:heading_fold_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  1
-    let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  1
+    let s:heading_fold_level_patterns['^\s*[#=] .*'] =  [1, 1]
+    let s:heading_fold_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  [1, 2]
+    let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  [1, 2]
     let s:outline_fold_level_patterns = {}
     " let s:outline_fold_level_patterns['^\([-*]\|[0-9]\+[.)]\)'] =  1
     " let s:outline_fold_level_patterns['\%5c\([-*]\|[0-9]\+[.)]\)'] =  2
@@ -40,13 +44,21 @@ function! foil#init()
     for level in range(0, 10)
         let leader = repeat(" ", level * g:foil_shiftwidth)
         let pattern = "^" .. leader .. "- .*"
-        let s:outline_fold_level_patterns[pattern] = level + 1
+        let s:outline_fold_level_patterns[pattern] = [level + 1, level + 1]
     endfor
     let g:foil_initialized = 1
     return s:outline_fold_level_patterns
 endfunction!
 
 function! foil#setup_syntax()
+    for pattern in keys(s:heading_fold_level_patterns)
+        let syntax_name = "outlineHeader" . s:heading_fold_level_patterns[pattern][1]
+        execute "syntax region " . syntax_name . " start=/" . pattern . "/ end=/$/"
+    endfor
+    for pattern in keys(s:outline_fold_level_patterns)
+        let syntax_name = "outlineLevel" . s:outline_fold_level_patterns[pattern][1]
+        execute "syntax region " . syntax_name . " start=/" . pattern . "/ end=/$/"
+    endfor
 endfunction
 
 " function! foil#check_buffer()
@@ -146,13 +158,13 @@ function! foil#get_text_fold_start_level(text)
     endif
     for pattern in keys(s:heading_fold_level_patterns)
         if a:text =~ pattern
-            return s:header_fold_level_patterns[pattern]
+            return s:header_fold_level_patterns[pattern][0]
         endif
     endfor
     for pattern in keys(s:outline_fold_level_patterns)
         if a:text =~ pattern
         " if match(pattern, a:text) >= 0
-            return s:outline_fold_level_patterns[pattern]
+            return s:outline_fold_level_patterns[pattern][0]
         endif
     endfor
     return -1
