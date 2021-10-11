@@ -163,7 +163,7 @@ function! foil#calc_fold_level(lnum)
             let fold_level = indentlevel + 1
         end
         let b:foil_line_fold_levels[a:lnum] = [fold_level, ""]
-        let fold_expr_val = fold_start_level
+        let fold_expr_val = fold_level
     else
         let b:foil_line_fold_levels[a:lnum] = [fold_start_level, ">"]
         let fold_expr_val = ">" . fold_start_level
@@ -289,7 +289,6 @@ if !exists("g:foil_suppress_keymaps") || !g:foil_suppress_keymaps
     endif
 endif
 " }}}1
-
 
 " Restore State {{{1
 " ============================================================================
