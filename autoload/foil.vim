@@ -25,11 +25,11 @@ set cpo&vim
 " ============================================================================
 
 function! foil#init()
-    let g:foil_initialized = 1
+    let s:heading_fold_level_patterns = {}
+    let s:heading_fold_level_patterns['^\s*[#=] .*'] =  1
+    let s:heading_fold_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  1
+    let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  1
     let s:outline_fold_level_patterns = {}
-    let s:outline_fold_level_patterns['^\s*[#=] .*'] =  1
-    let s:outline_fold_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  1
-    let s:outline_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  1
     " let s:outline_fold_level_patterns['^\([-*]\|[0-9]\+[.)]\)'] =  1
     " let s:outline_fold_level_patterns['\%5c\([-*]\|[0-9]\+[.)]\)'] =  2
     " let s:outline_fold_level_patterns['\%9c\([-*]\|[0-9]\+[.)]\)'] =  3
@@ -40,11 +40,14 @@ function! foil#init()
     for level in range(0, 10)
         let leader = repeat(" ", level * g:foil_shiftwidth)
         let pattern = "^" .. leader .. "- .*"
-        echo pattern
         let s:outline_fold_level_patterns[pattern] = level + 1
     endfor
+    let g:foil_initialized = 1
     return s:outline_fold_level_patterns
 endfunction!
+
+function! foil#setup_syntax()
+endfunction
 
 " function! foil#check_buffer()
 "     if g:foil_auto_enable
@@ -141,6 +144,11 @@ function! foil#get_text_fold_start_level(text)
     if !exists("s:outline_fold_level_patterns")
         call foil#init()
     endif
+    for pattern in keys(s:heading_fold_level_patterns)
+        if a:text =~ pattern
+            return s:header_fold_level_patterns[pattern]
+        endif
+    endfor
     for pattern in keys(s:outline_fold_level_patterns)
         if a:text =~ pattern
         " if match(pattern, a:text) >= 0
