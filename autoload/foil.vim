@@ -46,18 +46,49 @@ function! foil#init()
         let pattern = "^" .. leader .. "- .*"
         let s:outline_fold_level_patterns[pattern] = [level + 1, level + 1]
     endfor
+    let s:default_heading_highlights = {
+                \   1: "guifg=#904040 gui=italic,underline,bold",
+                \   2: "guifg=#807070 gui=italic,undercurl,bold",
+                \}
+    let s:default_outline_highlights = {
+                \    1: "guifg=#977070 gui=bold",
+                \    2: "guifg=#448888 gui=bold",
+                \    3: "guifg=#5b8060 gui=bold",
+                \    4: "guifg=#999988 gui=bold",
+                \    5: "guifg=#808060 gui=bold",
+                \    6: "guifg=#667070 gui=bold",
+                \}
     let g:foil_initialized = 1
     return s:outline_fold_level_patterns
 endfunction!
 
 function! foil#setup_syntax()
+    if !exists("g:foil_initialized")
+        call foil#init()
+    endif
     for pattern in keys(s:heading_fold_level_patterns)
-        let syntax_name = "outlineHeader" . s:heading_fold_level_patterns[pattern][1]
+        let heading_level = s:heading_fold_level_patterns[pattern][1]
+        let syntax_name = "outlineHeader" . heading_level
         execute "syntax region " . syntax_name . " start=/" . pattern . "/ end=/$/"
+        let highlight_def = get(g:foil_heading_highlights,
+                    \   heading_level,
+                    \   get(s:default_heading_highlights, heading_level, "")
+                    \)
+        if g:foil_setup_highlights && highlight_def != ""
+            execute "highlight! " . syntax_name . " " . highlight_def
+        endif
     endfor
     for pattern in keys(s:outline_fold_level_patterns)
-        let syntax_name = "outlineLevel" . s:outline_fold_level_patterns[pattern][1]
+        let outline_level = s:outline_fold_level_patterns[pattern][1]
+        let syntax_name = "outlineLevel" . outline_level
         execute "syntax region " . syntax_name . " start=/" . pattern . "/ end=/$/"
+        let highlight_def = get(g:foil_outline_highlights,
+                    \   outline_level,
+                    \   get(s:default_outline_highlights, outline_level, "")
+                    \)
+        if g:foil_setup_highlights && highlight_def != ""
+            execute "highlight! " . syntax_name . " " . highlight_def
+        endif
     endfor
 endfunction
 
