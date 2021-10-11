@@ -26,18 +26,24 @@ set cpo&vim
 
 function! foil#init()
     let g:foil_initialized = 1
-    let s:header_level_patterns = {}
-    let s:header_level_patterns['^\s*[#=] .*'] =  1
-    let s:header_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  1
-    let s:header_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  1
-    let s:header_level_patterns['^\([-*]\|[0-9]\+[.)]\)'] =  1
-    let s:header_level_patterns['\%5c\([-*]\|[0-9]\+[.)]\)'] =  2
-    let s:header_level_patterns['\%9c\([-*]\|[0-9]\+[.)]\)'] =  3
-    let s:header_level_patterns['\%13c\([-*]\|[0-9]\+[.)]\)'] =  4
-    let s:header_level_patterns['\%17c\([-*]\|[0-9]\+[.)]\)'] =  5
-    let s:header_level_patterns['\%21c\([-*]\|[0-9]\+[.)]\)'] =  6
-    let s:header_level_patterns['\%25c\([-*]\|[0-9]\+[.)]\)'] =  7
-    return s:header_level_patterns
+    let s:outline_fold_level_patterns = {}
+    let s:outline_fold_level_patterns['^\s*[#=] .*'] =  1
+    let s:outline_fold_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  1
+    let s:outline_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  1
+    " let s:outline_fold_level_patterns['^\([-*]\|[0-9]\+[.)]\)'] =  1
+    " let s:outline_fold_level_patterns['\%5c\([-*]\|[0-9]\+[.)]\)'] =  2
+    " let s:outline_fold_level_patterns['\%9c\([-*]\|[0-9]\+[.)]\)'] =  3
+    " let s:outline_fold_level_patterns['\%13c\([-*]\|[0-9]\+[.)]\)'] =  4
+    " let s:outline_fold_level_patterns['\%17c\([-*]\|[0-9]\+[.)]\)'] =  5
+    " let s:outline_fold_level_patterns['\%21c\([-*]\|[0-9]\+[.)]\)'] =  6
+    " let s:outline_fold_level_patterns['\%25c\([-*]\|[0-9]\+[.)]\)'] =  7
+    for level in range(0, 10)
+        let leader = repeat(" ", level * g:foil_shiftwidth)
+        let pattern = "^" .. leader .. "- .*"
+        echo pattern
+        let s:outline_fold_level_patterns[pattern] = level + 1
+    endfor
+    return s:outline_fold_level_patterns
 endfunction!
 
 " function! foil#check_buffer()
@@ -132,13 +138,13 @@ endfunction
 " ============================================================================
 
 function! foil#get_text_fold_start_level(text)
-    if !exists("s:header_level_patterns")
+    if !exists("s:outline_fold_level_patterns")
         call foil#init()
     endif
-    for pattern in keys(s:header_level_patterns)
+    for pattern in keys(s:outline_fold_level_patterns)
         if a:text =~ pattern
         " if match(pattern, a:text) >= 0
-            return s:header_level_patterns[pattern]
+            return s:outline_fold_level_patterns[pattern]
         endif
     endfor
     return -1
@@ -160,7 +166,7 @@ function! foil#calc_fold_level(lnum)
         if indentlevel == 0
             let fold_level = b:foil_line_fold_levels[a:lnum-1][0]
         else
-            let fold_level = indentlevel + 1
+            let fold_level = indentlevel
         end
         let b:foil_line_fold_levels[a:lnum] = [fold_level, ""]
         let fold_expr_val = fold_level
