@@ -29,7 +29,7 @@ set cpo&vim
 " "<1", "<2", ..        a fold with this level ends at this line
 " ">1", ">2", ..        a fold with this level starts at this line
 function! FoilFoldExpr()
-    return foil#calc_fold_level(bufnr("."), v:lnum)
+    return foil#calc_fold_level(v:lnum)
 endfunction
 
 function! FoilFoldText()

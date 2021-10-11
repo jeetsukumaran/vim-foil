@@ -119,11 +119,9 @@ endfunction
 
 function! foil#recalc_all(buf_ref)
     let lnum = 1
-    while 1
-        let fl = foil#calc_fold_level(a:buf_ref, lnum)
-        if fl == -1
-            break
-        endif
+    let last_line_nr = line("$")
+    while lnum <= last_line_nr
+        let fl = foil#calc_fold_level(lnum)
         let lnum = lnum + 1
     endwhile
 endfunction
@@ -146,17 +144,16 @@ function! foil#get_text_fold_start_level(text)
     return -1
 endfunction
 
-function! foil#calc_fold_level(buf_ref, lnum)
+function! foil#calc_fold_level(lnum)
     " if b:foil_line_fold_levels[a:lnum+1] != "-1"
     "     " previously calculated level for this line
     "     return b:foil_line_fold_levels[a:lnum+1]
     " end
-    " let vline = getline(a:lnum)
-    let vlines = getbufline(a:buf_ref, a:lnum)
-    if empty(vlines)
-        return -1
-    endif
-    let vline = vlines[0]
+    let vline = getline(a:lnum)
+    " let vlines = getbufline(a:buf_ref, a:lnum)
+    " if empty(vlines)
+    "     return -1
+    " endif
     let fold_start_level = foil#get_text_fold_start_level(vline)
     if fold_start_level == -1
         let indentlevel = indent(a:lnum) / shiftwidth()
@@ -178,6 +175,42 @@ endfunction
 
 " Editing Support {{{1
 " ============================================================================
+
+function! foil#get_outline_range(lnum)
+    let start_ln = a:lnum
+    call foil#calc_fold_level(a:lnum)
+    let range_start = a:lnum
+    let range_level =  b:foil_line_fold_levels[range_start][0]
+    while range_start > 1
+        if b:foil_line_fold_levels[range_start][1] == ">"
+            break
+        endif
+        let range_start = range_start - 1
+        call foil#calc_fold_level(range_start)
+    endwhile
+    let range_end = a:lnum + 1
+    let last_line_nr = line("$")
+    while range_end <= last_line_nr
+        call foil#calc_fold_level(range_end)
+        let calc = b:foil_line_fold_levels[range_end]
+        echomsg  range_end . ": " . calc[0] . ", " . calc[1] . " (" . range_level . ")"
+        if (
+                    \ (calc[0] < range_level)
+                    \ || (calc[0] == range_level && calc[1] == ">")
+                    \ )
+            let range_end = range_end - 1
+            break
+        endif
+        let range_end = range_end + 1
+    endwhile
+    return [range_start, range_end, range_level]
+endfunction
+
+function! foil#promote(buf_ref, lnum)
+endfunction
+
+function! foil#demote(buf_ref, lnum)
+endfunction
 
 " }}}1
 
