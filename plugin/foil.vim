@@ -21,6 +21,12 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}1
 
+" Globals {{{1
+" ============================================================================
+let g:foil_max_outline_level_color = get(g:, "foil_max_outline_level_color", 6)
+let g:foil_shiftwidth = get(g:, "g:foil_shiftwidth", shiftwidth())
+" }}}1
+
 " Folding Functions {{{1
 " ============================================================================
 
@@ -45,11 +51,6 @@ endfunction
 command! FoilActivate :call foil#apply_to_buffer()
 command! FoilDeactivate :call foil#deapply_buffer()
 " }}}
-
-" Globals {{{1
-" ============================================================================
-let g:foil_max_outline_level_color = get(g:, "foil_max_outline_level_color", 6)
-" }}}1
 
 " Restore State {{{1
 " ============================================================================

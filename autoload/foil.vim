@@ -156,7 +156,7 @@ function! foil#calc_fold_level(lnum)
     " endif
     let fold_start_level = foil#get_text_fold_start_level(vline)
     if fold_start_level == -1
-        let indentlevel = indent(a:lnum) / shiftwidth()
+        let indentlevel = indent(a:lnum) / g:foil_shiftwidth
         if indentlevel == 0
             let fold_level = b:foil_line_fold_levels[a:lnum-1][0]
         else
@@ -193,7 +193,7 @@ function! foil#get_outline_range(lnum)
     while range_end <= last_line_nr
         call foil#calc_fold_level(range_end)
         let calc = b:foil_line_fold_levels[range_end]
-        echomsg  range_end . ": " . calc[0] . ", " . calc[1] . " (" . range_level . ")"
+        " echomsg  range_end . ": " . calc[0] . ", " . calc[1] . " (" . range_level . ")"
         if (
                     \ (calc[0] < range_level)
                     \ || (calc[0] == range_level && calc[1] == ">")
@@ -203,14 +203,35 @@ function! foil#get_outline_range(lnum)
         endif
         let range_end = range_end + 1
     endwhile
+    " echomsg  range_start . " => " . range_end
     return [range_start, range_end, range_level]
 endfunction
 
-function! foil#promote(buf_ref, lnum)
+function! foil#shift_level(lnum, is_increase)
+    let block_range = foil#get_outline_range(a:lnum)
+    if a:is_increase
+        let find_pattern = "^" . repeat(" ", g:foil_shiftwidth)
+        let replace_pattern = ""
+    else
+        let find_pattern = "^"
+        let replace_pattern = repeat(" ", g:foil_shiftwidth)
+    endif
+    for block_lnum in range(block_range[0], block_range[1])
+        let text = getline(block_lnum)
+        let rtext = substitute(text, find_pattern, replace_pattern, "")
+        call setline(block_lnum, rtext)
+    endfor
 endfunction
 
-function! foil#demote(buf_ref, lnum)
+function! foil#promote(lnum)
+    call foil#shift_level(a:lnum, 1)
 endfunction
+
+function! foil#demote(lnum)
+    call foil#shift_level(a:lnum, 0)
+endfunction
+" nnoremap \< :call foil#promote(line("."))<CR>
+" nnoremap \> :call foil#demote(line("."))<CR>
 
 " }}}1
 
