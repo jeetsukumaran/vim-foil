@@ -230,8 +230,6 @@ endfunction
 function! foil#demote(lnum)
     call foil#shift_level(a:lnum, 0)
 endfunction
-" nnoremap \< :call foil#promote(line("."))<CR>
-" nnoremap \> :call foil#demote(line("."))<CR>
 
 " }}}1
 
@@ -275,6 +273,23 @@ endfunction
 " endfunction
 
 " }}}1
+
+" Key Mapping {{{1
+" ============================================================================
+
+nnoremap <silent> <Plug>(FoilPromote) :call foil#promote(line("."))<CR>
+nnoremap <silent> <Plug>(FoilDemote) :call foil#demote(line("."))<CR>
+
+if !exists("g:foil_suppress_keymaps") || !g:foil_suppress_keymaps
+    if !hasmapto('<Plug>(FoilPromote)')
+        map \< <Plug>(FoilPromote)
+    endif
+    if !hasmapto('<Plug>(FoilDemote)')
+        map \> <Plug>(FoilDemote)
+    endif
+endif
+" }}}1
+
 
 " Restore State {{{1
 " ============================================================================
