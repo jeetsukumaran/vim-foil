@@ -9,5 +9,5 @@
 "     " another buffer, then this ftdetect will be called and the file type will
 "     " be set it "foil".
 "     autocmd BufNew,BufNewFile,BufRead *.outline.txt :set filetype=foil
-"    " autocmd BufNew,BufNewFile,BufRead *.outline :FoilActivate
+      " autocmd BufNew,BufNewFile,BufRead *.outline.txt :FoilActivate
 " augroup END
