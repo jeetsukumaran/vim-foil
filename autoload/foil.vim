@@ -109,6 +109,9 @@ endfunction
 " endfunction
 
 function! foil#apply_to_buffer()
+    if !exists("g:foil_initialized")
+        call foil#init()
+    endif
     if exists("b:foil_applied_to_buffer")
         return
     endif
