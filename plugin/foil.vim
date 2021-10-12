@@ -50,7 +50,7 @@ endfunction
 
 " Define Commands {{{1
 " ============================================================================
-command! FoilInit :call foil#init()
+command! FoilApply :set ft=foil
 command! FoilActivate :call foil#apply_to_buffer()
 command! FoilDeactivate :call foil#deapply_buffer()
 " }}}

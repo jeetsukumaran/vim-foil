@@ -133,9 +133,6 @@ function! foil#apply_to_buffer()
 endfunction!
 
 function! foil#deapply_buffer()
-    if !exists("g:foil_initialized")
-        call foil#init()
-    endif
     execute "setlocal foldmethod=" . get(b:, "foil_buffer_foldmethod", &foldmethod)
     execute "setlocal foldexpr=" . get(b:, "foil_buffer_foldexpr", &foldexpr)
     execute "setlocal foldtext=" . get(b:, "foil_buffer_foldtext", &foldtext)
