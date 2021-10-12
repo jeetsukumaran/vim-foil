@@ -135,7 +135,7 @@ function! foil#apply_to_buffer()
 endfunction!
 
 function! foil#deapply_buffer()
-    execute "setlocal ft=" . get(b:, "foil_buffer_ft", &foldtext)
+    execute "setlocal ft=" . get(b:, "foil_buffer_ft", &ft)
     execute "setlocal foldmethod=" . get(b:, "foil_buffer_foldmethod", &foldmethod)
     execute "setlocal foldexpr=" . get(b:, "foil_buffer_foldexpr", &foldexpr)
     execute "setlocal foldtext=" . get(b:, "foil_buffer_foldtext", &foldtext)
