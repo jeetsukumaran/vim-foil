@@ -115,11 +115,11 @@ function! foil#apply_to_buffer()
     if exists("b:foil_applied_to_buffer")
         return
     endif
-    let b:foil_buffer_ft = &ft
+    " let b:foil_buffer_ft = &ft
     let b:foil_buffer_foldmethod = &foldmethod
     let b:foil_buffer_foldexpr = &foldexpr
     let b:foil_buffer_foldtext = &foldtext
-    setlocal ft=foil
+    " setlocal ft=foil
     setlocal foldmethod=expr
     if !exists("b:foil_buffer_autocommands")
         augroup FoilFastFolding
@@ -130,12 +130,13 @@ function! foil#apply_to_buffer()
     endif
     setlocal foldexpr=FoilFoldExpr()
     setlocal foldtext=FoilFoldText()
+    call foil#setup_syntax()
     let b:foil_line_fold_levels = {}
     let b:foil_applied_to_buffer = 1
 endfunction!
 
 function! foil#deapply_buffer()
-    execute "setlocal ft=" . get(b:, "foil_buffer_ft", &ft)
+    " execute "setlocal ft=" . get(b:, "foil_buffer_ft", &ft)
     execute "setlocal foldmethod=" . get(b:, "foil_buffer_foldmethod", &foldmethod)
     execute "setlocal foldexpr=" . get(b:, "foil_buffer_foldexpr", &foldexpr)
     execute "setlocal foldtext=" . get(b:, "foil_buffer_foldtext", &foldtext)
@@ -293,7 +294,7 @@ endfunction
 
 " }}}1
 
-" Highlighting Support {{{1
+" Miscellaneous {{{1
 " ============================================================================
 
 function! foil#toggle_hlattribute(hlname, hlelem, hlattr)

@@ -54,6 +54,15 @@ command! FoilActivate :call foil#apply_to_buffer()
 command! FoilDeactivate :call foil#deapply_buffer()
 " }}}
 
+" Autocommands for Activation {{{1
+" ============================================================================
+augroup foilfiletypedetect
+    autocmd!
+    " autocmd BufNew,BufNewFile,BufRead *.outline.txt :set filetype=foil
+    autocmd BufNewFile,BufFilePre,BufRead *.outline.txt :FoilActivate
+augroup END
+" }}}
+
 " Restore State {{{1
 " ============================================================================
 " restore options
