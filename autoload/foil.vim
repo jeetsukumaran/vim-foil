@@ -32,7 +32,11 @@ function! foil#init()
     let s:heading_fold_level_patterns = {}
     let s:heading_fold_level_patterns['^\s*[#=] .*'] =  [1, 1]
     let s:heading_fold_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  [1, 2]
-    let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  [1, 2]
+    let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  [2, 3]
+    let s:heading_fold_level_patterns['^\s*\(#\{4}\|=\{4}\) .*'] =  [3, 4]
+    let s:heading_fold_level_patterns['^\s*\(#\{5}\|=\{5}\) .*'] =  [4, 5]
+    let s:heading_fold_level_patterns['^\s*\(#\{6}\|=\{6}\) .*'] =  [5, 6]
+    let s:heading_fold_level_patterns['^\s*\(#\{7}\|=\{7}\) .*'] =  [6, 7]
     let s:outline_fold_level_patterns = {}
     " let s:outline_fold_level_patterns['^\([-*]\|[0-9]\+[.)]\)'] =  1
     " let s:outline_fold_level_patterns['\%5c\([-*]\|[0-9]\+[.)]\)'] =  2
@@ -46,9 +50,21 @@ function! foil#init()
         let pattern = "^" .. leader .. "- .*"
         let s:outline_fold_level_patterns[pattern] = [level + 1, level + 1]
     endfor
+
+    " highly oxygenated blood red      = "#9d0006",
+    " green    = "#79740e",
+    " orange   = "#b57614",
+    " blue     = "#076678",
+    " purple   = "#8f3f71",
+    " aqua     = "#427b58",
+    " faded red   = "#af3a03",
+
     let s:default_heading_highlights = {
-                \   1: "guifg=#904040 gui=italic,underline,bold",
-                \   2: "guifg=#807070 gui=italic,undercurl,bold",
+                \   1: "guifg=#af3a03 gui=italic,underline,bold",
+                \   2: "guifg=#b57614 gui=italic,undercurl,bold",
+                \   3: "guifg=#79740e gui=italic,underline,bold",
+                \   4: "guifg=#8f3f71 gui=italic,undercurl,bold",
+                \   5: "guifg=#807070 gui=italic,undercurl,bold",
                 \}
     let s:default_outline_highlights = {
                 \    1: "guifg=#977070 gui=bold",
