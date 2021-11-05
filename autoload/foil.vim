@@ -66,8 +66,9 @@ function! foil#init()
                 \   4: "guifg=#8f3f71 gui=italic,undercurl,bold",
                 \   5: "guifg=#807070 gui=italic,undercurl,bold",
                 \}
+    " 1: "guifg=#977070 gui=bold",
     let s:default_outline_highlights = {
-                \    1: "guifg=#977070 gui=bold",
+                \    1: "guifg=#928374 gui=bold",
                 \    2: "guifg=#448888 gui=bold",
                 \    3: "guifg=#5b8060 gui=bold",
                 \    4: "guifg=#999988 gui=bold",
