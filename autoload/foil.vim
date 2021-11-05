@@ -209,7 +209,7 @@ function! foil#get_text_fold_start_level(text)
     endif
     for pattern in keys(s:heading_fold_level_patterns)
         if a:text =~ pattern
-            return s:header_fold_level_patterns[pattern][0]
+            return s:heading_fold_level_patterns[pattern][0]
         endif
     endfor
     for pattern in keys(s:outline_fold_level_patterns)
