@@ -83,6 +83,11 @@ function! foil#setup_syntax()
     if !exists("g:foil_initialized")
         call foil#init()
     endif
+    call foil#setup_heading_and_levels_syntax()
+    call foil#setup_special_syntax()
+endfunction
+
+function! foil#setup_heading_and_levels_syntax()
     for pattern in keys(s:heading_fold_level_patterns)
         let heading_level = s:heading_fold_level_patterns[pattern][1]
         let syntax_name = "outlineHeader" . heading_level
@@ -107,14 +112,28 @@ function! foil#setup_syntax()
             execute "highlight! " . syntax_name . " " . highlight_def
         endif
     endfor
-    call foil#setup_code_snippet_syntax("python", "```python", "```", "SpecialComment")
-    call foil#setup_code_snippet_syntax("tex", "```tex", "```", "SpecialComment")
 endfunction
 
-function! foil#setup_latex_env_syntax(pattern, name)
+function! foil#setup_special_syntax()
+    call foil#setup_code_snippet_syntax("python", "```python", "```", "SpecialComment")
+    call foil#setup_code_snippet_syntax("tex", "```tex", "```", "SpecialComment")
+
+    highlight! link outlineTexMath SpecialComment
+    highlight! link outlineTexMathBody Constant
+    call foil#setup_latex_env_syntax("align", "outlineTexMath", "outlineTexMathBody")
+    call foil#setup_latex_env_syntax("align\\*", "outlineTexMath", "outlineTexMathBody")
+endfunction
+
+function! foil#setup_latex_env_syntax(pattern, name, body_name)
     let sr = ""
     let sr .= "syntax region " . a:name
     let sr .= " start='\\\\begin{" . a:pattern . "}' end='\\\\end{" . a:pattern . "}'"
+    let sr .= " contains=" . a:body_name
+    execute sr
+
+    let sr = ""
+    let sr .= "syntax region " . a:body_name
+    let sr .= " start='\\\\begin{" . a:pattern . "}\\zs' end='\\ze\\\\end{" . a:pattern . "}'"
     execute sr
 endfunction
 
@@ -143,6 +162,7 @@ function! foil#setup_code_snippet_syntax(filetype, start, end, textSnipHl) abort
                 \ start="'.a:start.'" end="'.a:end.'"
                 \ contains=@'.group
 endfunction
+
 
 " function! foil#check_buffer()
 "     if g:foil_auto_enable
