@@ -107,6 +107,24 @@ function! foil#setup_syntax()
             execute "highlight! " . syntax_name . " " . highlight_def
         endif
     endfor
+
+    " :syntax include @Tex syntax/tex.vim
+    " :syntax region outlineTex start="\\begin{[^}]\+}" end="\\end{[^}]\+}" keepend contains=@Tex
+
+    :syntax include @Python syntax/python.vim
+    :syntax region outlinePython start="```python" end="```" keepend contains=@Python
+
+    highlight! outlineTexEnv guifg=#00ff88
+    call foil#setup_latex_env_syntax("align", "outlineTexEnv")
+    call foil#setup_latex_env_syntax("align\\*", "outlineTexEnv")
+
+endfunction
+
+function! foil#setup_latex_env_syntax(pattern, name)
+    let sr = ""
+    let sr .= "syntax region " . a:name
+    let sr .= " start='\\\\begin{" . a:pattern . "}' end='\\\\end{" . a:pattern . "}'"
+    execute sr
 endfunction
 
 " function! foil#check_buffer()
