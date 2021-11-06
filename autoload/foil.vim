@@ -107,17 +107,8 @@ function! foil#setup_syntax()
             execute "highlight! " . syntax_name . " " . highlight_def
         endif
     endfor
-
-    " :syntax include @Tex syntax/tex.vim
-    " :syntax region outlineTex start="\\begin{[^}]\+}" end="\\end{[^}]\+}" keepend contains=@Tex
-
-    :syntax include @Python syntax/python.vim
-    :syntax region outlinePython start="```python" end="```" keepend contains=@Python
-
-    highlight! outlineTexEnv guifg=#00ff88
-    call foil#setup_latex_env_syntax("align", "outlineTexEnv")
-    call foil#setup_latex_env_syntax("align\\*", "outlineTexEnv")
-
+    call foil#setup_code_snippet_syntax("python", "```python", "```", "SpecialComment")
+    call foil#setup_code_snippet_syntax("tex", "```tex", "```", "SpecialComment")
 endfunction
 
 function! foil#setup_latex_env_syntax(pattern, name)
@@ -125,6 +116,32 @@ function! foil#setup_latex_env_syntax(pattern, name)
     let sr .= "syntax region " . a:name
     let sr .= " start='\\\\begin{" . a:pattern . "}' end='\\\\end{" . a:pattern . "}'"
     execute sr
+endfunction
+
+function! foil#setup_code_snippet_syntax(filetype, start, end, textSnipHl) abort
+    let ft=toupper(a:filetype)
+    let group='textGroup'.ft
+    if exists('b:current_syntax')
+        let s:current_syntax=b:current_syntax
+        " Remove current syntax definition, as some syntax files (e.g. cpp.vim)
+        " do nothing if b:current_syntax is defined.
+        unlet b:current_syntax
+    endif
+    execute 'syntax include @'.group.' syntax/'.a:filetype.'.vim'
+    try
+        execute 'syntax include @'.group.' after/syntax/'.a:filetype.'.vim'
+    catch
+    endtry
+    if exists('s:current_syntax')
+        let b:current_syntax=s:current_syntax
+    else
+        unlet b:current_syntax
+    endif
+    execute 'syntax region textSnip'.ft.'
+                \ matchgroup='.a:textSnipHl.'
+                \ keepend
+                \ start="'.a:start.'" end="'.a:end.'"
+                \ contains=@'.group
 endfunction
 
 " function! foil#check_buffer()
