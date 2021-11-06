@@ -115,6 +115,11 @@ function! foil#setup_heading_and_levels_syntax()
 endfunction
 
 function! foil#setup_special_syntax()
+
+    " generic code
+    syntax region outlineCodeSnippet matchgroup=SpecialComment start="```" end="```" keepend
+
+    " specialized code
     for [ft, lang_tag] in [
                 \   ["python", "python",],
                 \   ["bash", "bash",],
