@@ -59,8 +59,9 @@ function! foil#init()
     " aqua     = "#427b58",
     " faded red   = "#af3a03",
 
+    " \   1: "guifg=#af3a03 gui=italic,underline,bold",
     let s:default_heading_highlights = {
-                \   1: "guifg=#af3a03 gui=italic,underline,bold",
+                \   1: "guifg=#cc6644 gui=italic,underline,bold",
                 \   2: "guifg=#b57614 gui=italic,undercurl,bold",
                 \   3: "guifg=#79740e gui=italic,underline,bold",
                 \   4: "guifg=#8f3f71 gui=italic,undercurl,bold",
@@ -130,7 +131,7 @@ function! foil#setup_special_syntax()
 
     highlight! link outlineTexMath SpecialComment
     highlight! link outlineTexInlineMath Constant
-    highlight! link outlineTexMathBody Constant
+    highlight! link outlineTexMathBody outlineTexInlineMath
     call foil#setup_latex_env_syntax("align", "outlineTexMath", "outlineTexMathBody")
     call foil#setup_latex_env_syntax("align\\*", "outlineTexMath", "outlineTexMathBody")
     syntax match outlineTexInlineMath '\$.\{-}\$'
