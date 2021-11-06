@@ -115,8 +115,13 @@ function! foil#setup_heading_and_levels_syntax()
 endfunction
 
 function! foil#setup_special_syntax()
-    call foil#setup_code_snippet_syntax("python", "```python", "```", "SpecialComment")
-    call foil#setup_code_snippet_syntax("tex", "```tex", "```", "SpecialComment")
+    for [ft, lang_tag] in [
+                \   ["python", "python",],
+                \   ["bash", "bash",],
+                \]
+        call foil#setup_code_snippet_syntax(ft, "```" . lang_tag, "```", "SpecialComment")
+    endfor
+    " call foil#setup_code_snippet_syntax("tex", "```tex", "```", "SpecialComment")
 
     highlight! link outlineTexMath SpecialComment
     highlight! link outlineTexMathBody Constant
