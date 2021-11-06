@@ -103,7 +103,7 @@ function! foil#setup_heading_and_levels_syntax()
     for pattern in keys(s:outline_fold_level_patterns)
         let outline_level = s:outline_fold_level_patterns[pattern][1]
         let syntax_name = "outlineLevel" . outline_level
-        execute "syntax region " . syntax_name . " start=/" . pattern . "/ end=/$/"
+        execute "syntax region " . syntax_name . " start=/" . pattern . "/ end=/$/ contains=outlineTexInlineMath"
         let highlight_def = get(g:foil_outline_highlights,
                     \   outline_level,
                     \   get(s:default_outline_highlights, outline_level, "")
