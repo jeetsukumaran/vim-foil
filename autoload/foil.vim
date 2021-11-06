@@ -129,9 +129,11 @@ function! foil#setup_special_syntax()
     " call foil#setup_code_snippet_syntax("tex", "```tex", "```", "SpecialComment")
 
     highlight! link outlineTexMath SpecialComment
+    highlight! link outlineTexInlineMath Constant
     highlight! link outlineTexMathBody Constant
     call foil#setup_latex_env_syntax("align", "outlineTexMath", "outlineTexMathBody")
     call foil#setup_latex_env_syntax("align\\*", "outlineTexMath", "outlineTexMathBody")
+    syntax match outlineTexInlineMath '\$.\{-}\$'
 endfunction
 
 function! foil#setup_latex_env_syntax(pattern, name, body_name)
