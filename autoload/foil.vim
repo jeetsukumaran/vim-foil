@@ -122,16 +122,20 @@ function! foil#setup_special_syntax()
     syntax region outlineTexMathBody matchgroup=SpecialComment start="$$" end="$$" keepend
 
     " specialized code
-    for [ft, lang_tag] in [
-                \   ["python", "python",],
-                \   ["bash", "bash",],
-                \]
-        call foil#setup_code_snippet_syntax(ft, "```" . lang_tag, "```", "SpecialComment")
-        " call foil#setup_code_snippet_syntax("tex", "\$\$", "\$\$", "SpecialComment")
-    endfor
+    " Disabled because the (correct) syntax coloration can be confusing given
+    " the same highlights being used in different ways in the surrounding
+    " context
+    " for [ft, lang_tag] in [
+    "             \   ["python", "python",],
+    "             \   ["bash", "bash",],
+    "             \]
+    "     call foil#setup_code_snippet_syntax(ft, "```" . lang_tag, "```", "SpecialComment")
+    "     call foil#setup_code_snippet_syntax("tex", "\$\$", "\$\$", "SpecialComment")
+    " endfor
 
+    highlight! link outlineCodeSnippet SpecialComment
     highlight! link outlineTexMath SpecialComment
-    highlight! link outlineTexInlineMath PreProc
+    highlight! link outlineTexInlineMath SpecialComment
     highlight! link outlineTexMathBody outlineTexInlineMath
     call foil#setup_latex_env_syntax("align", "outlineTexMath", "outlineTexMathBody")
     call foil#setup_latex_env_syntax("align\\*", "outlineTexMath", "outlineTexMathBody")
