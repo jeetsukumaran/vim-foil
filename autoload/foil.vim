@@ -131,7 +131,7 @@ function! foil#setup_special_syntax()
     endfor
 
     highlight! link outlineTexMath SpecialComment
-    highlight! link outlineTexInlineMath Special
+    highlight! link outlineTexInlineMath PreProc
     highlight! link outlineTexMathBody outlineTexInlineMath
     call foil#setup_latex_env_syntax("align", "outlineTexMath", "outlineTexMathBody")
     call foil#setup_latex_env_syntax("align\\*", "outlineTexMath", "outlineTexMathBody")
