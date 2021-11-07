@@ -119,6 +119,7 @@ function! foil#setup_special_syntax()
 
     " generic code
     syntax region outlineCodeSnippet matchgroup=SpecialComment start="```" end="```" keepend
+    syntax region outlineTexMathBody matchgroup=SpecialComment start="$$" end="$$" keepend
 
     " specialized code
     for [ft, lang_tag] in [
@@ -126,15 +127,15 @@ function! foil#setup_special_syntax()
                 \   ["bash", "bash",],
                 \]
         call foil#setup_code_snippet_syntax(ft, "```" . lang_tag, "```", "SpecialComment")
+        " call foil#setup_code_snippet_syntax("tex", "\$\$", "\$\$", "SpecialComment")
     endfor
-    " call foil#setup_code_snippet_syntax("tex", "```tex", "```", "SpecialComment")
 
     highlight! link outlineTexMath SpecialComment
-    highlight! link outlineTexInlineMath Constant
+    highlight! link outlineTexInlineMath Special
     highlight! link outlineTexMathBody outlineTexInlineMath
     call foil#setup_latex_env_syntax("align", "outlineTexMath", "outlineTexMathBody")
     call foil#setup_latex_env_syntax("align\\*", "outlineTexMath", "outlineTexMathBody")
-    syntax match outlineTexInlineMath '\$.\{-}\$'
+    syntax match outlineTexInlineMath '\$[^$].\{-}[^$]\$'
 endfunction
 
 function! foil#setup_latex_env_syntax(pattern, name, body_name)
