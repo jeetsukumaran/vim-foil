@@ -134,7 +134,8 @@ function! foil#setup_special_syntax()
     call foil#setup_latex_env_syntax("align\\*", "outlineTexMath", "outlineTexMathBody")
     syntax match outlineTexInlineMath '\$[^$].\{-}[^$]\$'
     " highlight! outlineSpecialCode guifg=#996600 gui=bold
-    highlight! link outlineCodeSnippet   Special
+    highlight! link outlineSpecialCode   Special
+    highlight! link outlineCodeSnippet   outlineSpecialCode
     highlight! link outlineCodeSnippet   outlineSpecialCode
     highlight! link outlineTexMath       outlineSpecialCode
     highlight! link outlineTexInlineMath outlineSpecialCode
