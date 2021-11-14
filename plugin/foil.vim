@@ -24,6 +24,7 @@ set cpo&vim
 " Globals {{{1
 " ============================================================================
 let g:foil_max_outline_level_color = get(g:, "foil_max_outline_level_color", 6)
+let g:foil_heading_fold_start_level = get(g:, "foil_heading_fold_start_level", 1)
 let g:foil_shiftwidth = get(g:, "g:foil_shiftwidth", shiftwidth())
 let g:foil_setup_highlights = get(g:, "g:sfoil_setup_highlights", 1)
 let g:foil_heading_highlights = get(g:, "g:foil_heading_highlights", {})

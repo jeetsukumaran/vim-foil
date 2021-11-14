@@ -30,13 +30,23 @@ function! foil#init()
     "   -   a = fold level
     "   -   b = heading level (for syntax coloration)
     let s:heading_fold_level_patterns = {}
-    let s:heading_fold_level_patterns['^\s*[#=] .*'] =  [1, 1]
-    let s:heading_fold_level_patterns['^\s*\(#\{2}\|=\{2}\) .*'] =  [1, 2]
-    let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  [2, 3]
-    let s:heading_fold_level_patterns['^\s*\(#\{4}\|=\{4}\) .*'] =  [3, 4]
-    let s:heading_fold_level_patterns['^\s*\(#\{5}\|=\{5}\) .*'] =  [4, 5]
-    let s:heading_fold_level_patterns['^\s*\(#\{6}\|=\{6}\) .*'] =  [5, 6]
-    let s:heading_fold_level_patterns['^\s*\(#\{7}\|=\{7}\) .*'] =  [6, 7]
+    " let s:heading_fold_level_patterns['^\s*[#=] .*'] =  [1, 1]
+    let cur_heading_level = 1
+    for level in range(1, 7)
+        if level >= g:foil_heading_fold_start_level
+            let a = cur_heading_level
+            let cur_heading_level = cur_heading_level + 1
+        else
+            let a = 0
+        end
+        let pattern = '^\s*\(#\{' . level . '}\|=\{' . level .'}\) .*'
+        let s:heading_fold_level_patterns[pattern] =  [a, 2]
+    endfor
+    " let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  [2, 3]
+    " let s:heading_fold_level_patterns['^\s*\(#\{4}\|=\{4}\) .*'] =  [3, 4]
+    " let s:heading_fold_level_patterns['^\s*\(#\{5}\|=\{5}\) .*'] =  [4, 5]
+    " let s:heading_fold_level_patterns['^\s*\(#\{6}\|=\{6}\) .*'] =  [5, 6]
+    " let s:heading_fold_level_patterns['^\s*\(#\{7}\|=\{7}\) .*'] =  [6, 7]
     let s:outline_fold_level_patterns = {}
     " let s:outline_fold_level_patterns['^\([-*]\|[0-9]\+[.)]\)'] =  1
     " let s:outline_fold_level_patterns['\%5c\([-*]\|[0-9]\+[.)]\)'] =  2
