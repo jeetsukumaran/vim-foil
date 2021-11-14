@@ -208,12 +208,16 @@ endfunction
 "     endif
 " endfunction
 
-function! foil#apply_to_buffer()
+function! foil#apply_to_buffer(bang)
     if !exists("g:foil_initialized")
         call foil#init()
     endif
     if exists("b:foil_applied_to_buffer")
-        return
+        if !a:bang == "!"
+            return
+        else
+            call foil#deapply_buffer()
+        endif
     endif
     " let b:foil_buffer_ft = &ft
     let b:foil_buffer_foldmethod = &foldmethod

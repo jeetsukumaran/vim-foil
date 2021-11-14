@@ -51,7 +51,7 @@ endfunction
 
 " Define Commands {{{1
 " ============================================================================
-command! FoilActivate :call foil#apply_to_buffer()
+command! -bang FoilActivate :call foil#apply_to_buffer(<q-bang>)
 command! FoilDeactivate :call foil#deapply_buffer()
 " }}}
 
