@@ -40,7 +40,7 @@ function! foil#init()
             let a = 0
         end
         let pattern = '^\s*\(#\{' . level . '}\|=\{' . level .'}\) .*'
-        let s:heading_fold_level_patterns[pattern] =  [a, 2]
+        let s:heading_fold_level_patterns[pattern] =  [a, level]
     endfor
     " let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  [2, 3]
     " let s:heading_fold_level_patterns['^\s*\(#\{4}\|=\{4}\) .*'] =  [3, 4]
