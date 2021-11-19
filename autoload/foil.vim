@@ -42,19 +42,7 @@ function! foil#init()
         let pattern = '^\s*\(#\{' . level . '}\|=\{' . level .'}\) .*'
         let s:heading_fold_level_patterns[pattern] =  [a, level]
     endfor
-    " let s:heading_fold_level_patterns['^\s*\(#\{3}\|=\{3}\) .*'] =  [2, 3]
-    " let s:heading_fold_level_patterns['^\s*\(#\{4}\|=\{4}\) .*'] =  [3, 4]
-    " let s:heading_fold_level_patterns['^\s*\(#\{5}\|=\{5}\) .*'] =  [4, 5]
-    " let s:heading_fold_level_patterns['^\s*\(#\{6}\|=\{6}\) .*'] =  [5, 6]
-    " let s:heading_fold_level_patterns['^\s*\(#\{7}\|=\{7}\) .*'] =  [6, 7]
     let s:outline_fold_level_patterns = {}
-    " let s:outline_fold_level_patterns['^\([-*]\|[0-9]\+[.)]\)'] =  1
-    " let s:outline_fold_level_patterns['\%5c\([-*]\|[0-9]\+[.)]\)'] =  2
-    " let s:outline_fold_level_patterns['\%9c\([-*]\|[0-9]\+[.)]\)'] =  3
-    " let s:outline_fold_level_patterns['\%13c\([-*]\|[0-9]\+[.)]\)'] =  4
-    " let s:outline_fold_level_patterns['\%17c\([-*]\|[0-9]\+[.)]\)'] =  5
-    " let s:outline_fold_level_patterns['\%21c\([-*]\|[0-9]\+[.)]\)'] =  6
-    " let s:outline_fold_level_patterns['\%25c\([-*]\|[0-9]\+[.)]\)'] =  7
     for level in range(0, 10)
         let leader = repeat(" ", level * g:foil_shiftwidth)
         let pattern = "^" .. leader .. "- .*"
@@ -101,7 +89,7 @@ endfunction
 function! foil#setup_heading_and_levels_syntax()
     for pattern in keys(s:heading_fold_level_patterns)
         let heading_level = s:heading_fold_level_patterns[pattern][1]
-        let syntax_name = "outlineHeader" . heading_level
+        let syntax_name = "foilHeading" . heading_level
         execute "syntax region " . syntax_name . " start=/" . pattern . "/ end=/$/"
         let highlight_def = get(g:foil_heading_highlights,
                     \   heading_level,
@@ -113,7 +101,7 @@ function! foil#setup_heading_and_levels_syntax()
     endfor
     for pattern in keys(s:outline_fold_level_patterns)
         let outline_level = s:outline_fold_level_patterns[pattern][1]
-        let syntax_name = "outlineLevel" . outline_level
+        let syntax_name = "foilListLevel" . outline_level
         execute "syntax region " . syntax_name . " start=/" . pattern . "/ end=/$/ contains=ALL"
         let highlight_def = get(g:foil_outline_highlights,
                     \   outline_level,
@@ -127,8 +115,8 @@ endfunction
 
 function! foil#setup_special_syntax()
     " generic code
-    syntax region outlineCodeSnippet matchgroup=SpecialCode start="```" end="```" keepend
-    syntax region outlineTexMathBody matchgroup=SpecialCode start="$$" end="$$" keepend
+    syntax region foilCodeSnippet matchgroup=SpecialCode start="```" end="```" keepend
+    syntax region foilTexMathBody matchgroup=SpecialCode start="$$" end="$$" keepend
     " specialized code
     " Disabled because the (correct) syntax coloration can be confusing given
     " the same highlights being used in different ways in the surrounding
@@ -140,16 +128,16 @@ function! foil#setup_special_syntax()
     "     call foil#setup_code_snippet_syntax(ft, "```" . lang_tag, "```", "SpecialComment")
     "     call foil#setup_code_snippet_syntax("tex", "\$\$", "\$\$", "SpecialComment")
     " endfor
-    call foil#setup_latex_env_syntax("align", "outlineTexMath", "outlineTexMathBody")
-    call foil#setup_latex_env_syntax("align\\*", "outlineTexMath", "outlineTexMathBody")
-    syntax match outlineTexInlineMath '\$[^$].\{-}[^$]\$'
-    " highlight! outlineSpecialCode guifg=#996600 gui=bold
-    highlight! link outlineSpecialCode   Special
-    highlight! link outlineCodeSnippet   outlineSpecialCode
-    highlight! link outlineCodeSnippet   outlineSpecialCode
-    highlight! link outlineTexMath       outlineSpecialCode
-    highlight! link outlineTexInlineMath outlineSpecialCode
-    highlight! link outlineTexMathBody   outlineSpecialCode
+    call foil#setup_latex_env_syntax("align", "foilTexMath", "foilTexMathBody")
+    call foil#setup_latex_env_syntax("align\\*", "foilTexMath", "foilTexMathBody")
+    syntax match foilTexInlineMath '\$[^$].\{-}[^$]\$'
+    " highlight! foilSpecialCode guifg=#996600 gui=bold
+    highlight! link foilSpecialCode   Special
+    highlight! link foilCodeSnippet   foilSpecialCode
+    highlight! link foilCodeSnippet   foilSpecialCode
+    highlight! link foilTexMath       foilSpecialCode
+    highlight! link foilTexInlineMath foilSpecialCode
+    highlight! link foilTexMathBody   foilSpecialCode
 endfunction
 
 function! foil#setup_latex_env_syntax(pattern, name, body_name)
